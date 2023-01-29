@@ -46,4 +46,5 @@ jobs:
         with:
           test-script: yarn test:cov
           package-manager: yarn
-          output: report-markdown
+          skip-step: install
+          output: comment, report-markdown
