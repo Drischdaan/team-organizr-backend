@@ -21,10 +21,16 @@ jobs:
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
+          cache: 'yarn'
           node-version: ${{ matrix.node-version }}
 
-      - name: Install npm dependencies
-        run: yarn install
+      - uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
 
       - name: Lint code
         run: yarn lint
@@ -38,6 +44,6 @@ jobs:
       - uses: ArtiomTr/jest-coverage-report-action@v2
         id: coverage
         with:
-          test-script: yarn jest
+          test-script: yarn test:cov
           package-manager: yarn
           output: report-markdown
